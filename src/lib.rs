@@ -12,6 +12,7 @@ pub mod day4;
 pub mod day5;
 pub mod day6;
 pub mod day7;
+pub mod day8;
 
 #[cfg(test)]
 mod tests {
@@ -136,5 +137,21 @@ mod tests {
         let answer = day7::day7_2(&lines);
 
         assert_eq!(answer, 1157);
+    }
+
+    #[test]
+    fn day8_1() {
+        let lines = get_lines_from_file("inputs/day8.txt");
+        let answer = day8::day8_1(&lines[0]);
+
+        assert_eq!(answer, 47112);
+    }
+
+    #[test]
+    fn day8_2() {
+        let lines = get_lines_from_file("inputs/day8.txt");
+        let answer = day8::day8_2(&lines[0]);
+
+        assert_eq!(answer, 28237);
     }
 }

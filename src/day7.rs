@@ -71,27 +71,45 @@ pub fn day7_2(lines: &[String]) -> u32 {
     let mut no_edges_heap = in_degree_map.keys()
         .filter(|n| *in_degree_map.get(n).unwrap() == 0)
         .copied()
-        .map(|c| Reverse((0, c)))
+        .map(Reverse)
         .collect::<BinaryHeap<_>>();
 
-    let mut finish_time = 0;
+    let mut in_progress_heap = BinaryHeap::new();
+    let mut total_time = 0;
 
-    while !no_edges_heap.is_empty() {
-        let Reverse((time, curr)) = no_edges_heap.pop().unwrap(); 
-        let time_spent = curr as u32 - 'A' as u32 + 61;
+    while !no_edges_heap.is_empty() || ! in_progress_heap.is_empty() {
+        let mut curr_time = None;
 
-        for node in out_edges_map[&curr].iter() {
-            let in_degree = in_degree_map.get_mut(node).unwrap();
-            *in_degree -= 1;
-            if *in_degree == 0 {
-                no_edges_heap.push(Reverse((time + time_spent, *node)));
+        while let Some(Reverse((time, label))) = in_progress_heap.peek() {
+            let time = *time;
+            let label = *label;
+
+            if curr_time.is_none() { 
+                curr_time = Some(time); 
+                total_time = if time > total_time { time } else { total_time };
+            }
+
+            if time != curr_time.unwrap() { break; }
+
+            in_progress_heap.pop();
+
+            for neighbor in out_edges_map[&label].iter() {
+                let in_degree = in_degree_map.get_mut(neighbor).unwrap();
+                *in_degree -= 1;
+
+                if *in_degree == 0 {
+                    no_edges_heap.push(Reverse(*neighbor));
+                }
             }
         }
 
-        if no_edges_heap.is_empty() {
-            finish_time = time + time_spent;
+        while in_progress_heap.len() < 5 && !no_edges_heap.is_empty() {
+            let Reverse(label) = no_edges_heap.pop().unwrap(); 
+            let time_cost = label as u32 - 'A' as u32 + 61;
+            let finish_time = curr_time.unwrap_or(0) + time_cost;
+            in_progress_heap.push(Reverse((finish_time, label)));
         }
     }
 
-    finish_time
+    total_time
 }
