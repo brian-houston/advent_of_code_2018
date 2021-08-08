@@ -13,6 +13,7 @@ pub mod day5;
 pub mod day6;
 pub mod day7;
 pub mod day8;
+pub mod day9;
 
 #[cfg(test)]
 mod tests {
@@ -153,5 +154,19 @@ mod tests {
         let answer = day8::day8_2(&lines[0]);
 
         assert_eq!(answer, 28237);
+    }
+
+    #[test]
+    fn day9_1() {
+        let answer = day9::day9(423, 71944);
+
+        assert_eq!(answer, 418237);
+    }
+
+    #[test]
+    fn day9_2() {
+        let answer = day9::day9(423, 7194400);
+
+        assert_eq!(answer, 3505711612);
     }
 }
